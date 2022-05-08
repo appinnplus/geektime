@@ -1,4 +1,5 @@
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -7,15 +8,20 @@ public class HelloXlassLoader extends ClassLoader{
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        String path = "";
+        String path = "/Users/sean/IdeaProjects/geektime/jvm/xlass/";
         String fileName = path+name+".xlass";
-        InputStream is = getClass().getResourceAsStream(fileName);
+        InputStream is = null;
+        try {
+            is = new FileInputStream(fileName);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         if(is==null){
             return null;
         }
         try {
             int length = is.available();
-            byte[] in = new byte[length];
+            byte[] in = is.readAllBytes();
             byte[] out = new byte[length];
             int index = 0;
             for(byte b: in){
